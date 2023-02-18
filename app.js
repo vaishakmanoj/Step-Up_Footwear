@@ -48,7 +48,7 @@ const fileFilter = (req, file, cb) => {
 app.use(multer({
   storage:storage,fileFilter}).fields([{name:'imagee',maxCount:6},{name:'BImage'}]))
 app.use(logger('dev'));
-app.use(express.static(path.join(__dirname,'public')));
+app.use(express.static(path.join(__dirname,'Public')));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
