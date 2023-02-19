@@ -25,8 +25,58 @@ adminlogin: (req,res)=>{
     next(err)
    }
 },
-adminhome: (req,res)=>{
-  res.render('admin/home',{page:"Dashboard"});
+adminhome: async(req,res)=>{
+  try {
+  const startOfMonth = new Date();
+  startOfMonth.setDate(1);
+  startOfMonth.setHours(0, 0, 0, 0);
+  const endOfMonth = new Date();
+  endOfMonth.setMonth(endOfMonth.getMonth() + 1);
+  endOfMonth.setDate(0);
+  endOfMonth.setHours(23, 59, 59, 999);
+
+  let salesChart = await orderModel.aggregate([
+    {
+      $match: {
+        order_status: { $ne: "pending" },
+        ordered_date: {
+          $gte: startOfMonth,
+          $lt: endOfMonth,
+        },
+      },
+    },
+    {
+      $group: {
+        _id: { $dateToString: { format: "%Y-%m-%d", date: "$ordered_date" } },
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $sort: { _id: 1 },
+    },
+  ]);
+  console.log(salesChart,"sales chart workingggggg")
+  
+  const users = await USerModel.find({}).count();
+  console.log(users, "jj")
+  const products = await productModel.find({}).count()
+  console.log(products, "ppp")
+  const categories = await CategoryModel.find({}).count()
+  const order = await orderModel.find({ order_status: { $ne: "pending" } }).count()
+  let orders = await orderModel.find({ order_status: { $ne: "pending" } }).populate('productt.product_id').populate('userid').sort({ ordered_date: -1 }).limit(10)
+  let CODcount=await orderModel.find({'payment.payment_method':'cash  on delivery'}).count()
+  let ONLINEcount=await orderModel.find({'payment.payment_method':'Online_payment'}).count()
+
+
+  console.log(CODcount,"oo");
+  console.log(ONLINEcount,"oo");
+
+  res.render("admin/home", { users, products, categories, order, orders,page:'Dashboard',CODcount,ONLINEcount,salesChart});
+
+} catch (err) {
+  next(err)
+}
+
 },
 adLogin: async (req, res) => {
   // console.log("huhhh");
