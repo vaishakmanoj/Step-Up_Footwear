@@ -623,7 +623,7 @@ posteditcoupon:async(req,res,next)=>{
   }
  },
  orderMangement:async(req,res,next)=>{
-
+console.log('-----------');
   try {
     orderModel
         .find({ order_status: { $ne: "pending" } })
@@ -643,6 +643,7 @@ posteditcoupon:async(req,res,next)=>{
  },
 
  orderlist : (req, res, next) => {
+  console.log('-----------');
   try {
     console.log("HELLOlllllllllll");
     orderModel
@@ -764,6 +765,19 @@ invoice: (req, res, next) => {
     console.log(error);
   }
 },
+vieworder:async(req,res,next)=>{
+  try {
+    console.log("order coming....")
+    const order=await orderModel.find({order_status:{$ne:'pending'}}).populate('userid').sort({ordered_date:-1})
+    
+    res.render('admin/view-order',{page:'order',order})
+    
+  } catch (error) {
+    next(error)
+    
+  }
+ },
+ 
 
 salesDetails:async(req,res)=>{
   try {

@@ -78,6 +78,7 @@ router.get('/deletecoupon/:id',adminSession,controller.deletecoupon)
 
 //*************************** Order ******************************//
 
+router.get('/vieworder',adminSession,controller.vieworder)
 router.get('/orderManagement',adminSession,controller.orderMangement)
 router.get('/orderdetials/:id',adminSession,controller.orderlist)
 router.post('/delivarystatus',controller.delivarystatus)
